@@ -56,11 +56,18 @@ bc
 statement
 	: eos
 	| exp eos	{ printf("%d\n", $1);  }
+	| '{' statement_list '}'	{YDBG("Statement list\n");}
 	| error eos	{ yyerrok; }
 	;
 
+statement_list
+	: /* vazio */
+	| statement_list statement
+	;
+
 eos
-	: ';'		{ printf("\n"); }
+	:			{ printf("\n"); }
+	| ';'		{ printf("\n"); }
 	| '\n'
 	;
 
