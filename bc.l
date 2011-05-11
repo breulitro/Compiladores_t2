@@ -29,9 +29,13 @@ define      { LDBG("DEFINE "); return DEFINE; }
 auto        { LDBG("AUTO "); return AUTO; }
 return      { LDBG("RETURN "); return RETURN; }
 print       { LDBG("PRINT "); return PRINT; }
+break       { LDBG("BREAK "); return BREAK; }
+continue	{ LDBG("CONTINUE "); return CONTINUE; }
+halt		{ LDBG("HALT "); return HALT; }
+limits		{ LDBG("LIMITS "); return LIMITS; }
+warrant		{ LDBG("WARRANTY "); return WARRANTY; }
 
 sqrt        { LDBG("SQRT "); return SQRT; }
-break       { LDBG("BREAK "); return BREAK; }
 ibase       { LDBG("IBASE "); return IBASE; }
 obase       { LDBG("OBASE "); return OBASE; }
 "."         { LDBG(". "); return '.'; }
