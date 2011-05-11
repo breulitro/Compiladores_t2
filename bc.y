@@ -72,6 +72,15 @@ exp
 	| exp "--"		{ $$ = $1; TODO("Suportar Variaveis"); }
 	| "++" exp		{ $$ = $2 + 1; TODO("Suportar Variaveis"); }
 	| "--" exp		{ $$ = $2 - 1; TODO("Suportar Variaveis"); }
+	| exp '>' exp	{ $$ = $1 > $3; }
+	| exp ">=" exp	{ $$ = $1 >= $3; }
+	| exp '<' exp	{ $$ = $1 < $3; }
+	| exp "<=" exp	{ $$ = $1 <= $3; }
+	| exp "==" exp	{ $$ = $1 == $3; }
+	| exp "!=" exp	{ $$ = $1 != $3; }
+	| exp "&&" exp	{ $$ = $1 && $3; }
+	| exp "||" exp	{ $$ = $1 || $3; }
+	| '!' exp		{ $$ = !$1; }
 	| '(' exp ')'	{ $$ = $2; }
 	;
 %%
