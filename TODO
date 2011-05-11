@@ -6,12 +6,9 @@ Basic Elements:
 		SCALE
 		IBASE
 		OBASE
-		LAST acessado pelo ponto
+		LAST (acessado pelo ponto, ex: 2\n2+.)
 
 Expressoes:
-	Relacionais
-	Booleanas
-	Checar Precedencia
 	Special Expressions
 		sqrt(exp)
 		read()
