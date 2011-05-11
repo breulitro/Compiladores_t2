@@ -2,30 +2,59 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "bc.tab.h"
+#include <bc.tab.h>
+#include <bcdebug.h>
+
 void yyerror(char *);
 %}
 %option outfile="bc.yy.c" header-file="bc.yy.h"
 %option yylineno
+
+ID [a-zA-Z][a-zA-Z0-9]*
+STRING [a-zA-Z_]?\"(\\.|[^\\"])*\"
+NUM [0-9]+
+COMMENT "/*"([^*]|\*+[^*/])*\*+"/"
+LINE_COMMENT "//".*\n
+UNACCEPTED [|@#$&]+
+ESCAPED [ \t\r\v\f]+
+
 %%
-"//".*\n
-[ \t\r\v\f]+
-"/*"([^*]|\*+[^*/])*\*+"/"
-[0-9]+		{ yylval = atoi(yytext); return NUM; }
-"++"		{ return PLUS_PLUS; }
-"--"		{ return MINUS_MINUS; }
-"||"		{ return OR; }
-"&&"		{ return AND; }
-"<="		{ return LE; }
-">="		{ return GE; }
-"=="		{ return EQ; }
-"!="		{ return NE; }
-"+="		{ return PLUS_EQ; }
-"-="		{ return MINUS_EQ; }
-"*="		{ return ASTERISK_EQ; }
-"/="		{ return SLASH_EQ; }
-"%="		{ return PERCENT_EQ; }
-"^="		{ return CHAPEUZINHODOVOVO_EQ; }
-[|@#$&]+
-.|\n		{ return yytext[0]; }
+
+quit        { LDBG("Bye! :-)\n"); exit(0); }
+if          { LDBG("IF "); return IF; }
+else        { LDBG("ELSE "); return ELSE; }
+while       { LDBG("WHILE "); return WHILE; }
+for         { LDBG("FOR "); return FOR; }
+define      { LDBG("DEFINE "); return DEFINE; }
+auto        { LDBG("AUTO "); return AUTO; }
+return      { LDBG("RETURN "); return RETURN; }
+print       { LDBG("PRINT "); return PRINT; }
+
+sqrt        { LDBG("SQRT "); return SQRT; }
+break       { LDBG("BREAK "); return BREAK; }
+ibase       { LDBG("IBASE "); return IBASE; }
+obase       { LDBG("OBASE "); return OBASE; }
+"."         { LDBG(". "); return '.'; }
+{ID}		{ /*yylval = getvar(yytext);*/ LDBG("ID "); return ID; }
+{STRING}    { LDBG("STRING "); return STRING; }
+{NUM}		{ yylval = atoi(yytext); LDBG("NUM "); return NUM; }
+"++"		{ LDBG("++ "); return PLUS_PLUS; }
+"--"		{ LDBG("-- "); return MINUS_MINUS; }
+"||"		{ LDBG("|| "); return OR; }
+"&&"		{ LDBG("&& "); return AND; }
+"<="		{ LDBG("<= "); return LE; }
+">="		{ LDBG(">= "); return GE; }
+"=="		{ LDBG("== "); return EQ; }
+"!="		{ LDBG("!= "); return NE; }
+"+="		{ LDBG("+= "); return PLUS_EQ; }
+"-="		{ LDBG("-= "); return MINUS_EQ; }
+"*="		{ LDBG("*= "); return ASTERISK_EQ; }
+"/="		{ LDBG("/= "); return SLASH_EQ; }
+"%="		{ LDBG("%= "); return PERCENT_EQ; }
+"^="		{ LDBG("^= "); return CHAPEUZINHODOVOVO_EQ; }
+{COMMENT}
+{LINE_COMMENT}
+{ESCAPED}
+{UNACCEPTED}	{ yyerror("unaccepted char"); }
+.|\n		{ LDBG("%c ", yytext[0]); return yytext[0]; }
 %%

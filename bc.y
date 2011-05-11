@@ -2,15 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-#define DBG_TODO 1
-#define DBG_FIXME 2
-#define DBG_WARN 4
-
-#define TODO(fmt, arg...) if (DBG_TODO & DEBUG_MASK) printf("[TODO] "fmt"\n", ## arg)
-#define FIXME(fmt, ...) if (DBG_FIXME & DEBUG_MASK) printf("[FIXME] "fmt"\n", ##__VA_ARGS__)
-#define WARN(fmt, arg...) if (DBG_WARN & DEBUG_MASK) printf("[WARN] "fmt"\n", ## arg)
-#define DBG(fmt, arg...) if (DEBUG_MASK) printf(fmt"\n", ## arg)
+#include <bcdebug.h>
 
 extern int yylineno;
 void yyerror(const char *str) {
@@ -25,6 +17,8 @@ int yywrap()
 %}
 
 
+%token IF ELSE WHILE DO FOR DEFINE AUTO RETURN PRINT BREAK CONTINUE IBASE OBASE
+%token ID STRING SQRT
 
 %token NUM
 
