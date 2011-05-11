@@ -54,9 +54,14 @@ bc
 	;
 
 statement
-	: '\n'
-	| exp '\n'		{ printf("%d\n", $1);  }
-	| error '\n'	{ yyerrok; }
+	: eos
+	| exp eos	{ printf("%d\n", $1);  }
+	| error eos	{ yyerrok; }
+	;
+
+eos
+	: ';'		{ printf("\n"); }
+	| '\n'
 	;
 
 exp

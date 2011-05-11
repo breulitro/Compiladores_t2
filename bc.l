@@ -60,5 +60,5 @@ obase       { LDBG("OBASE "); return OBASE; }
 {LINE_COMMENT}
 {ESCAPED}
 {UNACCEPTED}	{ yyerror("unaccepted char"); }
-.|\n		{ LDBG("%c ", yytext[0]); return yytext[0]; }
+.|\n		{ LDBG("%c ", yytext[0]); if (yytext[0] == '\n') putchar('\b'); return yytext[0]; }
 %%
