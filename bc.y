@@ -54,7 +54,7 @@ bc
 	;
 
 statement
-	: eos
+	: statement eos
 	| exp eos	{ printf("%d\n", $1);  }
 	| '{' statement_list '}'	{YDBG("Statement list\n");}
 	| error eos	{ yyerrok; }
@@ -66,8 +66,7 @@ statement_list
 	;
 
 eos
-	:			{ printf("\n"); }
-	| ';'		{ printf("\n"); }
+	: ';'		{ printf("\n"); }
 	| '\n'
 	;
 
