@@ -9,7 +9,6 @@ Basic Elements:
 		LAST acessado pelo ponto
 
 Expressoes:
-	Operadores "++" e "--"
 	Relacionais
 	Booleanas
 	Checar Precedencia
@@ -35,7 +34,6 @@ Sentencas:
 
 Pseudo Sentencas:
 	'limits'
-	'quit'
 	'warranty'
 
 Math library functions
