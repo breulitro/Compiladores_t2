@@ -1,0 +1,48 @@
+Comentarios nao estao funcionando quando num arquivo de entrada
+ERRO:
+	[foo@peter Compiladores_t2]$ ./bc < foo
+	error: syntax error at line 2.
+	-1
+	4
+	error: syntax error at line 2.
+	0
+	1
+	0
+	0
+	1
+	0
+	1
+	0
+	Processed 16 lines
+`
+Execucao normal: (apresenta problema nos comentarios que comecam apos o inicio
+da linha)
+	[foo@peter Compiladores_t2]$ ./bc
+	1+2
+	3
+	/*asdasd
+	asdasd
+	asdasd*/
+	2+2
+	4
+	/*
+	asdasd
+	*/
+	/*999999*/
+	2-2
+	0
+	//123
+	123
+	123
+	1+2//123
+	error: syntax error at line 14.
+	2*3 /* asdasd */
+	2
+	2
+	2+2
+	4
+	2*2
+	4
+	2+2 /*asdasd*/
+	error: syntax error at line 18.
+	Processed 19 lines
