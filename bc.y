@@ -36,7 +36,7 @@ int yywrap()
 %token EQ "=="
 %token PLUS_EQ "+="
 %token MINUS_EQ "-="
-%token DOT_EQ "*="
+%token ASTERISK_EQ "*="
 %token SLASH_EQ "/="
 %token PERCENT_EQ "%="
 %token CHAPEUZINHODOVOVO_EQ "^="
@@ -76,8 +76,8 @@ exp
 	| '-' exp %prec NEG { $$ = -$2; }
 	| exp "++"		{ $$ = $1; TODO("Suportar Variaveis"); }
 	| exp "--"		{ $$ = $1; TODO("Suportar Variaveis"); }
-	| "++" exp		{ $$ = $1 + 1; TODO("Suportar Variaveis"); }
-	| "--" exp		{ $$ = $1 - 1; TODO("Suportar Variaveis"); }
+	| "++" exp		{ $$ = $2 + 1; TODO("Suportar Variaveis"); }
+	| "--" exp		{ $$ = $2 - 1; TODO("Suportar Variaveis"); }
 	| '(' exp ')'	{ $$ = $2; }
 	;
 %%
