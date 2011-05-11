@@ -1,0 +1,46 @@
+Basic Elements:
+	Variaveis do usuario:
+		Operadpres <op>=
+		arrays
+	Variaveis especiais:
+		SCALE
+		IBASE
+		OBASE
+		LAST acessado pelo ponto
+
+Expressoes:
+	Operadores "++" e "--"
+	Relacionais
+	Booleanas
+	Checar Precedencia
+	Special Expressions
+		sqrt(exp)
+		read()
+		scale()
+		length()
+
+Sentencas:
+	EXPRESSAO
+	STRING
+	'PRINT' LIST
+	{ LISTA_DE_SENTENCAS }
+	`IF' ( EXPRESSION ) STATEMENT1 [`ELSE' STATEMENT2]
+	`WHILE' ( EXPRESSION ) STATEMENT
+	`FOR' ( [EXPRESSION1] ; [EXPRESSION2] ; [EXPRESSION3] ) STATEMENT
+	'BREAK'
+	'HALT'
+	'CONTINUE'
+	'RETURN'
+	'RETURN' ( EXPRESSAO )
+
+Pseudo Sentencas:
+	'limits'
+	'quit'
+	'warranty'
+
+Math library functions
+Funcoes do usuario
+
+Melhorar tratamnto de erros
+Implementar arvore sintatica
+
