@@ -3,8 +3,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define TODO(fmt, arg...) printf("[TODO] "fmt, ## arg)
-#define FIXME(fmt, ...) printf("[FIXME] "fmt, ##__VA_ARGS__)
+#define DBG_TODO 1
+#define DBG_FIXME 2
+#define DBG_WARN 4
+
+#define TODO(fmt, arg...) if (DBG_TODO & DEBUG_MASK) printf("[TODO] "fmt"\n", ## arg)
+#define FIXME(fmt, ...) if (DBG_FIXME & DEBUG_MASK) printf("[FIXME] "fmt"\n", ##__VA_ARGS__)
+#define WARN(fmt, arg...) if (DBG_WARN & DEBUG_MASK) printf("[WARN] "fmt"\n", ## arg)
+#define DBG(fmt, arg...) if (DEBUG_MASK) printf(fmt"\n", ## arg)
 
 extern int yylineno;
 void yyerror(const char *str) {
@@ -18,19 +24,42 @@ int yywrap()
 }
 %}
 
+
+
 %token NUM
+
+%token OR "||"
+%token AND "&&"
+%token LE "<="
+%token GE ">="
+%token NE "!="
+%token EQ "=="
+%token PLUS_EQ "+="
+%token MINUS_EQ "-="
+%token DOT_EQ "*="
+%token SLASH_EQ "/="
+%token PERCENT_EQ "%="
+%token CHAPEUZINHODOVOVO_EQ "^="
+%token PLUS_PLUS "++"
+%token MINUS_MINUS "--"
+
+%left "||" "&&"
+%nonassoc '!'
+%left '<' '>' "<=" ">=" "!=" "=="
+%left "=" "+=" "-=" "*=" "/=" "%=" "^="
 %left '-' '+'
 %left '*' '/' '%'
-%left NEG
 %right '^'
+%nonassoc NEG
+%nonassoc "--" "++"
 
 %%
 bc
 	:/* vazio */
-	| bc linha
+	| bc statement
 	;
 
-linha
+statement
 	: '\n'
 	| exp '\n'		{ printf("%d\n", $1);  }
 	| error '\n'	{ yyerrok; }
@@ -45,9 +74,12 @@ exp
 	| exp '^' exp	{ $$ = $1 ^ $3; }
 	| exp '%' exp	{ $$ = $1 % $3; }
 	| '-' exp %prec NEG { $$ = -$2; }
+	| exp "++"		{ $$ = $1; TODO("Suportar Variaveis"); }
+	| exp "--"		{ $$ = $1; TODO("Suportar Variaveis"); }
+	| "++" exp		{ $$ = $1 + 1; TODO("Suportar Variaveis"); }
+	| "--" exp		{ $$ = $1 - 1; TODO("Suportar Variaveis"); }
 	| '(' exp ')'	{ $$ = $2; }
 	;
-
 %%
 void print_version() {
 	printf("\nPUCRS - 2011-01\n"

@@ -3,7 +3,13 @@ YACC=bison
 YDBGFLAGS=--verbose
 CC=gcc
 CLIBS = -lfl
-CFLAGS = -DDEBUG
+
+#DBG_TODO=1
+#DBG_FIXME=2
+#DBG_WARN=4
+CFLAGS = -DDEBUG_MASK=7
+#valores acima de 7 habilitam apenas a macro DBG
+
 target = bc
 
 all:
