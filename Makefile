@@ -10,7 +10,7 @@ CFLAGS = -I.
 #DBG_WARN=4
 #DBG_LEX=8
 #DBG_YACC=16
-MASK = 31
+MASK = $(shell echo "31 - 8" | bc)
 CFLAGS += -DDEBUG_MASK=$(MASK)
 #valores acima de 31 habilitam apenas a macro DBG
 

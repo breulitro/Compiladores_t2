@@ -66,7 +66,7 @@ statement_list
 	;
 
 eos
-	: ';'		{ printf("\n"); }
+	: ';'		{ LDBG("\n"); }
 	| '\n'
 	;
 
