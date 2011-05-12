@@ -11,10 +11,8 @@ typedef struct symrec {
 symrec *var_table = NULL;
 
 symrec *_procura_pelo_nome(struct symrec *v, char *n) {
-	DBG("Procurando por '%s'", n);
 	if (v) {
 		if (!strcmp(v->nome, n)) {
-			DBG("ACHEI");
 			return v;
 		} else {
 			return _procura_pelo_nome(v->proximo, n);
@@ -25,7 +23,6 @@ symrec *_procura_pelo_nome(struct symrec *v, char *n) {
 }
 
 symrec *procura_pelo_nome(char *n) {
-	DBG("Procura");
 	if (n)
 		return _procura_pelo_nome(var_table, n);
 	else
@@ -35,9 +32,7 @@ symrec *procura_pelo_nome(char *n) {
 
 symrec *getsym(char *n) {
 	symrec *i = NULL;
-	DBG("getsym()");
 	if (!var_table) {
-		DBG("Primeira Variavel");
 		struct symrec *novavar = malloc(sizeof(struct symrec *));
 		if (!novavar)
 			yyerror("Out of Memory");

@@ -1,6 +1,5 @@
 Basic Elements:
 	Variaveis do usuario:
-		Operadpres <op>=
 		arrays
 	Variaveis especiais:
 		SCALE
@@ -16,7 +15,6 @@ Expressoes:
 		length()
 
 Sentencas:
-	STRING
 	'PRINT' LIST
 	`IF' ( EXPRESSION ) STATEMENT1 [`ELSE' STATEMENT2]
 	`WHILE' ( EXPRESSION ) STATEMENT
