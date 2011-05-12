@@ -42,7 +42,7 @@ symrec *getsym(char *n) {
 		var_table = novavar;
 		i = var_table;
 	} else {
-		if ((i = procura_pelo_nome(n)) < 0) {
+		if (!(i = procura_pelo_nome(n))) {
 			struct symrec *novavar = malloc(sizeof(struct symrec *));
 			if (!novavar)
 				yyerror("Out of Memory");
@@ -67,4 +67,14 @@ void symrec_cleanup() {
 		var_table = aux;
 	}
 	printf("Cleaned\n");
+}
+
+char *gambiarra(int n, char *s) {
+	char *varname = malloc(100);
+	memset(varname, 0, 100);
+	FIXME("liberar tamanho da variavel");
+	WARN("Memory leak no $1");
+	sprintf(varname, "%d%s", n, s);
+	DBG("Criando Variavel %s", varname);
+	return varname;
 }

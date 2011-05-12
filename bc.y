@@ -70,12 +70,12 @@ statement
 	;
 
 statement_list
-	: /* vazio */
+	:
 	| statement_list statement
 	;
-
 eos
-	: ';'		{ LDBG("\n"); }
+	: /* da conflito, mas resolve caso do Statement List */
+	| ';'		{ LDBG("\n"); }
 	| '\n'
 	;
 
@@ -87,11 +87,20 @@ attr_exp
 	| ID "/=" exp	{ getsym($1)->val /= $3; }
 	| ID "%=" exp	{ getsym($1)->val = (int)(getsym($1)->val) % $3; }
 	| ID "^=" exp	{ getsym($1)->val = (int)(getsym($1)->val) ^ $3; }
+	| ID '[' NUM ']' '=' exp	{ getsym(gambiarra($3, $1))->val = $6; }
+	| ID '[' NUM ']' "+=" exp	{ getsym(gambiarra($3, $1))->val += $6; }
+	| ID '[' NUM ']' "-=" exp	{ getsym(gambiarra($3, $1))->val -= $6; }
+	| ID '[' NUM ']' "*=" exp	{ getsym(gambiarra($3, $1))->val *= $6; }
+	| ID '[' NUM ']' "/=" exp	{ getsym(gambiarra($3, $1))->val /= $6; }
+	| ID '[' NUM ']' "%=" exp	{ getsym(gambiarra($3, $1))->val = (int)(getsym(gambiarra($3, $1))->val) % $6; }
+	| ID '[' NUM ']' "^=" exp	{ getsym(gambiarra($3, $1))->val = (int)(getsym(gambiarra($3, $1))->val) ^ $6; }
+
 	;
 
 exp
 	: NUM
 	| ID			{ $$ = getsym($1)->val; }
+	| ID '[' NUM ']' { $$ = getsym(gambiarra($3, $1))->val; }
 	| exp '+' exp	{ $$ = $1 + $3; }
 	| exp '-' exp	{ $$ = $1 - $3; }
 	| exp '*' exp	{ $$ = $1 * $3; }
@@ -111,6 +120,10 @@ exp
 	| ID "--"		{ $$ = getsym($1)->val--; }
 	| "++" ID 		{ $$ = ++getsym($2)->val; }
 	| "--" ID 		{ $$ = --getsym($2)->val; }
+	| ID '[' NUM ']' "++" 	{ $$ = getsym(gambiarra($3, $1))->val++; }
+	| ID '[' NUM ']' "--" 	{ $$ = getsym(gambiarra($3, $1))->val--; }
+	| "++" ID '[' NUM ']' 	{ $$ = ++getsym(gambiarra($4, $2))->val; }
+	| "--" ID '[' NUM ']' 	{ $$ = --getsym(gambiarra($4, $2))->val; }
 	| '!' exp		{ $$ = !$2; }
 	| '(' exp ')'	{ $$ = $2; }
 	;

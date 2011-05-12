@@ -1,0 +1,16 @@
+entrada:
+	a[0] = 10
+	a[0]
+	a		//pq essa merda quebra
+
+saida:
+[FIXME] liberar tamanho da variavel
+[WARN] Memory leak no $1
+Criando Variavel 0a
+[FIXME] liberar tamanho da variavel
+[WARN] Memory leak no $1
+Criando Variavel 0a
+0
+9
+
+*NOTA: para entrada manual funciona direito.
