@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <bcdebug.h>
-
+#include <bc.h>
 extern int yylineno;
 void yyerror(const char *str) {
 	fprintf(stderr, "error: %s at line %d.\n", str, yylineno);
@@ -16,11 +16,18 @@ int yywrap()
 }
 %}
 
+%union {
+	int num;
+	char *str;
+}
 
 %token IF ELSE WHILE DO FOR DEFINE AUTO RETURN PRINT BREAK CONTINUE IBASE OBASE
-%token ID STRING SQRT HALT WARRANTY LIMITS
+%token SQRT HALT WARRANTY LIMITS
 
-%token NUM
+%token <str> ID
+%token <str> STRING
+%token <num> NUM
+%type <num> exp
 
 %token OR "||"
 %token AND "&&"
@@ -56,7 +63,9 @@ bc
 statement
 	: statement eos
 	| exp eos	{ printf("%d\n", $1);  }
+	| attr_exp eos
 	| '{' statement_list '}'	{YDBG("Statement list\n");}
+	| STRING 	{ puts($1); FIXME("escapar aspas"); }
 	| error eos	{ yyerrok; }
 	;
 
@@ -70,8 +79,19 @@ eos
 	| '\n'
 	;
 
+attr_exp
+	: ID '=' exp	{ getsym($1)->val = $3; }
+	| ID "+=" exp	{ getsym($1)->val += $3; }
+	| ID "-=" exp	{ getsym($1)->val -= $3; }
+	| ID "*=" exp	{ getsym($1)->val *= $3; }
+	| ID "/=" exp	{ getsym($1)->val /= $3; }
+	| ID "%=" exp	{ getsym($1)->val = (int)(getsym($1)->val) % $3; }
+	| ID "^=" exp	{ getsym($1)->val = (int)(getsym($1)->val) ^ $3; }
+	;
+
 exp
 	: NUM
+	| ID			{ $$ = getsym($1)->val; }
 	| exp '+' exp	{ $$ = $1 + $3; }
 	| exp '-' exp	{ $$ = $1 - $3; }
 	| exp '*' exp	{ $$ = $1 * $3; }
@@ -79,10 +99,6 @@ exp
 	| exp '^' exp	{ $$ = $1 ^ $3; }
 	| exp '%' exp	{ $$ = $1 % $3; }
 	| '-' exp %prec NEG { $$ = -$2; }
-	| exp "++"		{ $$ = $1; TODO("Suportar Variaveis"); }
-	| exp "--"		{ $$ = $1; TODO("Suportar Variaveis"); }
-	| "++" exp		{ $$ = $2 + 1; TODO("Suportar Variaveis"); }
-	| "--" exp		{ $$ = $2 - 1; TODO("Suportar Variaveis"); }
 	| exp '>' exp	{ $$ = $1 > $3; }
 	| exp ">=" exp	{ $$ = $1 >= $3; }
 	| exp '<' exp	{ $$ = $1 < $3; }
@@ -91,7 +107,11 @@ exp
 	| exp "!=" exp	{ $$ = $1 != $3; }
 	| exp "&&" exp	{ $$ = $1 && $3; }
 	| exp "||" exp	{ $$ = $1 || $3; }
-	| '!' exp		{ $$ = !$1; }
+	| ID "++"		{ $$ = getsym($1)->val++; }
+	| ID "--"		{ $$ = getsym($1)->val--; }
+	| "++" ID 		{ $$ = ++getsym($2)->val; }
+	| "--" ID 		{ $$ = --getsym($2)->val; }
+	| '!' exp		{ $$ = !$2; }
 	| '(' exp ')'	{ $$ = $2; }
 	;
 %%

@@ -39,9 +39,11 @@ sqrt        { LDBG("SQRT "); return SQRT; }
 ibase       { LDBG("IBASE "); return IBASE; }
 obase       { LDBG("OBASE "); return OBASE; }
 "."         { LDBG(". "); return '.'; }
-{ID}		{ /*yylval = getvar(yytext);*/ LDBG("ID "); return ID; }
-{STRING}    { LDBG("STRING "); return STRING; }
-{NUM}		{ yylval = atoi(yytext); LDBG("NUM "); return NUM; }
+
+{ID}		{ yylval.str = strdup(yytext); LDBG("ID "); return ID; }
+{STRING}    { LDBG("STRING "); yylval.str = strdup(yytext); return STRING; }
+{NUM}		{ yylval.num = atoi(yytext); LDBG("NUM "); return NUM; }
+
 "++"		{ LDBG("++ "); return PLUS_PLUS; }
 "--"		{ LDBG("-- "); return MINUS_MINUS; }
 "||"		{ LDBG("|| "); return OR; }
