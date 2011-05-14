@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <bcdebug.h>
 #include <bc.h>
+
 extern int yylineno;
 void yyerror(const char *str) {
 	fprintf(stderr, "error: %s at line %d.\n", str, yylineno);
@@ -28,6 +29,7 @@ int yywrap()
 %token <str> STRING
 %token <num> NUM
 %type <num> exp
+%token DBG
 
 %token OR "||"
 %token AND "&&"
@@ -53,7 +55,6 @@ int yywrap()
 %right '^'
 %nonassoc NEG
 %nonassoc "--" "++"
-
 %%
 bc
 	:/* vazio */
@@ -61,16 +62,18 @@ bc
 	;
 
 statement
-	: statement eos
-	| exp eos	{ printf("%d\n", $1);  }
-	| attr_exp eos
-	| '{' statement_list '}'	{YDBG("Statement list\n");}
+	: statement_list
+	| '{' statement_list '}' 	{YDBG("Statement list\n");}
+	| exp 	{ printf("%d\n", $1);  }
+	| attr_exp
 	| STRING 	{ puts($1); FIXME("escapar aspas"); }
-	| error eos	{ yyerrok; }
+	| DBG		{ debug_symtable(); }
+	| error	{ yyerrok; }
 	;
 
 statement_list
 	:
+	| statement eos
 	| statement_list statement
 	;
 eos
@@ -80,14 +83,23 @@ eos
 	;
 
 attr_exp
-	: ID '=' exp	{ getsym($1)->val = $3; }
+	: ID '=' exp	{ getsym($1)->val = $3; debug_symtable() }
 	| ID "+=" exp	{ getsym($1)->val += $3; }
 	| ID "-=" exp	{ getsym($1)->val -= $3; }
 	| ID "*=" exp	{ getsym($1)->val *= $3; }
 	| ID "/=" exp	{ getsym($1)->val /= $3; }
 	| ID "%=" exp	{ getsym($1)->val = (int)(getsym($1)->val) % $3; }
 	| ID "^=" exp	{ getsym($1)->val = (int)(getsym($1)->val) ^ $3; }
-	| ID '[' NUM ']' '=' exp	{ getsym(gambiarra($3, $1))->val = $6; }
+	| ID '[' NUM ']' '=' exp	{
+									DBG("###################");
+									symrec *s = getsym(gambiarra($3, $1));
+									s->val = $6;
+									DBG("Variavel que chegou aqui:\n\tNome: %s\n\tValor: %.2f", s->nome, s->val);
+									s = getsym(gambiarra($3, $1));
+									DBG("Variavel que chegou aqui:\n\tNome: %s\n\tValor: %.2f", s->nome, s->val);
+									DBG("###################");
+
+								}
 	| ID '[' NUM ']' "+=" exp	{ getsym(gambiarra($3, $1))->val += $6; }
 	| ID '[' NUM ']' "-=" exp	{ getsym(gambiarra($3, $1))->val -= $6; }
 	| ID '[' NUM ']' "*=" exp	{ getsym(gambiarra($3, $1))->val *= $6; }
@@ -105,7 +117,7 @@ exp
 	| exp '-' exp	{ $$ = $1 - $3; }
 	| exp '*' exp	{ $$ = $1 * $3; }
 	| exp '/' exp	{ $$ = $1 / $3; }
-	| exp '^' exp	{ $$ = $1 ^ $3; }
+	| exp '^' exp	{ $$ = pow($1, $3); }
 	| exp '%' exp	{ $$ = $1 % $3; }
 	| '-' exp %prec NEG { $$ = -$2; }
 	| exp '>' exp	{ $$ = $1 > $3; }

@@ -2,7 +2,7 @@ LEX=flex
 YACC=bison
 YDBGFLAGS=--verbose
 CC=gcc
-CLIBS = -lfl
+CLIBS = -lfl -lm
 CFLAGS = -I.
 
 #DBG_TODO=1
@@ -10,7 +10,7 @@ CFLAGS = -I.
 #DBG_WARN=4
 #DBG_LEX=8
 #DBG_YACC=16
-MASK = $(shell echo "31 - 8" | bc)
+MASK = $(shell echo "31 - 7 - 8" | bc)
 CFLAGS += -DDEBUG_MASK=$(MASK)
 #valores acima de 31 habilitam apenas a macro DBG
 

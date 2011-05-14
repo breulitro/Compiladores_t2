@@ -14,7 +14,7 @@ ID [a-zA-Z][a-zA-Z0-9]*
 STRING [a-zA-Z_]?\"(\\.|[^\\"])*\"
 NUM [0-9]+
 COMMENT "/*"([^*]|\*+[^*/])*\*+"/"
-LINE_COMMENT "//".*\n
+LINE_COMMENT "//".*
 UNACCEPTED [|@#$&]+
 ESCAPED [ \t\r\v\f]+
 
@@ -34,6 +34,7 @@ continue	{ LDBG("CONTINUE "); return CONTINUE; }
 halt		{ LDBG("HALT "); return HALT; }
 limits		{ LDBG("LIMITS "); return LIMITS; }
 warrant		{ LDBG("WARRANTY "); return WARRANTY; }
+dbg			{ return DBG; }
 
 sqrt        { LDBG("SQRT "); return SQRT; }
 ibase       { LDBG("IBASE "); return IBASE; }

@@ -1,0 +1,18 @@
+/*
+	A merda acontece quado tu declara uma variavel junto com a inicializacao
+*/
+a = 2
+a // resulta em 0
+b=2 // isso tem o mesmo efeito de 'b'
+b=2
+b // resulta em 2
+
+/*
+	Esse trecho que me deixou sem entender nada.
+	Assim que comitar isso vou pro gdb pra entender
+o que esta acontecendo com a tabela de variaveis.
+*/
+
+c = 3
+dbg //perceba que no debug o valor esta correto
+c	//mas agora nao ta mais....
