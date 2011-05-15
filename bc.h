@@ -5,7 +5,7 @@ extern void yyerror(char const*);
 typedef struct symrec {
 	struct symrec *proximo;
 	char *nome;
-	double val;
+	int val; //com float funciona, mas double da merda...
 } symrec;
 
 symrec *var_table = NULL;
@@ -34,11 +34,13 @@ symrec *procura_pelo_nome(char *n) {
 }
 
 void debug_symtable() {
+#if DEBUG_MASK
 	symrec *s;
 	int i = 0;
 	for(s = var_table; s; s = s->proximo)
-		DBG("Variavel[%d]:\n\tNome: %s\n\tValor: %.2f", ++i, s->nome, s->val);
+		DBG("Variavel[%d]:\n\tNome: %s\n\tValor: %d", ++i, s->nome, s->val);
 	DBG("%d variaveis na tabela", i);
+#endif
 }
 
 symrec *getsym(char *n) {

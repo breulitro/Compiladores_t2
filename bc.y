@@ -64,7 +64,7 @@ bc
 statement
 	: statement_list
 	| '{' statement_list '}' 	{YDBG("Statement list\n");}
-	| exp 	{ printf("%d\n", $1);  }
+	| exp 	{ FIXME("Implementar Ponto Flutuante"); printf("%d\n", $1);  }
 	| attr_exp
 	| STRING 	{ puts($1); FIXME("escapar aspas"); }
 	| DBG		{ debug_symtable(); }
