@@ -1,19 +1,14 @@
-(1 + 3 + 4) * 3  //24
-{1+2;3-4;2+2;}
-{1+2;3-4;2+2}
-/*
-3
--1
-4
-*/
-2^2
-2^3
-!1
-2>3
-2<3
-2==3
-2==2
-(1+2) > (4 - 1)
-a[0] = 10
-a[0]
-a	//pq essa merda quebra o bc
+if (1+2) a=1 else a=0 //BUG: tem que suprimir o output dentro do if
+a
+if(2) a=666
+a
+if (1) {
+	z = 1;
+	x = 2;
+} else {
+	z=0;
+	x=0;
+}
+z
+x
+

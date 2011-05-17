@@ -29,6 +29,9 @@ int yywrap()
 %token <str> STRING
 %token <num> NUM
 %type <num> exp
+%type <num> op_exp
+%type <num> attr_exp
+%type <num> statement
 %token DBG
 
 %token OR "||"
@@ -49,7 +52,7 @@ int yywrap()
 %left "||" "&&"
 %nonassoc '!'
 %left '<' '>' "<=" ">=" "!=" "=="
-%left "=" "+=" "-=" "*=" "/=" "%=" "^="
+%left '=' "+=" "-=" "*=" "/=" "%=" "^="
 %left '-' '+'
 %left '*' '/' '%'
 %right '^'
@@ -64,8 +67,10 @@ bc
 statement
 	: statement_list
 	| '{' statement_list '}' 	{YDBG("Statement list\n");}
-	| exp 	{ FIXME("Implementar Ponto Flutuante"); printf("%d\n", $1);  }
-	| attr_exp
+	| exp		{puts("era pra ter impresso um numero")}
+	| IF '(' exp ')' statement eos	{ if($3) $$ = $5;puts("IF"); }
+	| IF '(' exp ')' statement ELSE statement eos	{ if($3) $5; else $7; puts("IF ELSE"); }
+	//| control_structure  eos {puts("control structure"); }
 	| STRING 	{ puts($1); FIXME("escapar aspas"); }
 	| DBG		{ debug_symtable(); }
 	| error	{ yyerrok; }
@@ -83,37 +88,24 @@ eos
 	;
 
 attr_exp
-	: ID '=' exp	{ getsym($1)->val = $3; debug_symtable() }
-	| ID "+=" exp	{ getsym($1)->val += $3; }
-	| ID "-=" exp	{ getsym($1)->val -= $3; }
-	| ID "*=" exp	{ getsym($1)->val *= $3; }
-	| ID "/=" exp	{ getsym($1)->val /= $3; }
-	| ID "%=" exp	{ getsym($1)->val = (int)(getsym($1)->val) % $3; }
-	| ID "^=" exp	{ getsym($1)->val = (int)(getsym($1)->val) ^ $3; }
-	| ID '[' NUM ']' '=' exp	{
-									DBG("###################");
-									symrec *s = getsym(gambiarra($3, $1));
-									s->val = $6;
-									DBG("Variavel que chegou aqui:\n\tNome: %s\n\tValor: %.2f", s->nome, s->val);
-									s = getsym(gambiarra($3, $1));
-									DBG("Variavel que chegou aqui:\n\tNome: %s\n\tValor: %.2f", s->nome, s->val);
-									DBG("###################");
-
-								}
-	| ID '[' NUM ']' "+=" exp	{ getsym(gambiarra($3, $1))->val += $6; }
-	| ID '[' NUM ']' "-=" exp	{ getsym(gambiarra($3, $1))->val -= $6; }
-	| ID '[' NUM ']' "*=" exp	{ getsym(gambiarra($3, $1))->val *= $6; }
-	| ID '[' NUM ']' "/=" exp	{ getsym(gambiarra($3, $1))->val /= $6; }
-	| ID '[' NUM ']' "%=" exp	{ getsym(gambiarra($3, $1))->val = (int)(getsym(gambiarra($3, $1))->val) % $6; }
-	| ID '[' NUM ']' "^=" exp	{ getsym(gambiarra($3, $1))->val = (int)(getsym(gambiarra($3, $1))->val) ^ $6; }
-
+	: ID '=' exp	{ getsym($1)->val = $3; $$ = $3;  }
+	| ID "+=" exp	{ getsym($1)->val += $3; $$ = getsym($1)->val + $3; }
+	| ID "-=" exp	{ getsym($1)->val -= $3; $$ = getsym($1)->val - $3; }
+	| ID "*=" exp	{ getsym($1)->val *= $3; $$ = getsym($1)->val * $3; }
+	| ID "/=" exp	{ getsym($1)->val /= $3; $$ = getsym($1)->val / $3; }
+	| ID "%=" exp	{ getsym($1)->val = (int)(getsym($1)->val) % $3; $$ = getsym($1)->val % $3; }
+	| ID "^=" exp	{ getsym($1)->val = (int)(getsym($1)->val) ^ $3; $$ = getsym($1)->val ^ $3; }
+	| ID '[' NUM ']' '=' exp	{ getsym(gambiarra($3, $1))->val = $6; $$ = $6;}
+	| ID '[' NUM ']' "+=" exp	{ getsym(gambiarra($3, $1))->val += $6; $$ = getsym(gambiarra($3, $1))->val + $6; }
+	| ID '[' NUM ']' "-=" exp	{ getsym(gambiarra($3, $1))->val -= $6; $$ = getsym(gambiarra($3, $1))->val - $6; }
+	| ID '[' NUM ']' "*=" exp	{ getsym(gambiarra($3, $1))->val *= $6; $$ = getsym(gambiarra($3, $1))->val * $6; }
+	| ID '[' NUM ']' "/=" exp	{ getsym(gambiarra($3, $1))->val /= $6; $$ = getsym(gambiarra($3, $1))->val / $6; }
+	| ID '[' NUM ']' "%=" exp	{ getsym(gambiarra($3, $1))->val = (int)(getsym(gambiarra($3, $1))->val) % $6; $$ = getsym(gambiarra($3, $1))->val % $6; }
+	| ID '[' NUM ']' "^=" exp	{ getsym(gambiarra($3, $1))->val = (int)(getsym(gambiarra($3, $1))->val) ^ $6; $$ = getsym(gambiarra($3, $1))->val ^ $6; }
 	;
 
-exp
-	: NUM
-	| ID			{ $$ = getsym($1)->val; }
-	| ID '[' NUM ']' { $$ = getsym(gambiarra($3, $1))->val; }
-	| exp '+' exp	{ $$ = $1 + $3; }
+op_exp
+	: exp '+' exp	{ $$ = $1 + $3; }
 	| exp '-' exp	{ $$ = $1 - $3; }
 	| exp '*' exp	{ $$ = $1 * $3; }
 	| exp '/' exp	{ $$ = $1 / $3; }
@@ -139,6 +131,20 @@ exp
 	| '!' exp		{ $$ = !$2; }
 	| '(' exp ')'	{ $$ = $2; }
 	;
+
+exp
+	: NUM
+	| ID			{ $$ = getsym($1)->val; puts("ID"); }
+	| ID '[' NUM ']' { $$ = getsym(gambiarra($3, $1))->val; }
+	| attr_exp
+	| op_exp	{ FIXME("Implementar Ponto Flutuante"); printf("%d\n", $1);}
+	;
+/*
+control_structure
+	: IF '(' exp ')' statement			{ puts("IF"); }
+	| IF '(' exp ')' statement ELSE statement	{ puts("IF ELSE"); }
+	;
+*/
 %%
 void print_version() {
 	printf("\nPUCRS - 2011-01\n"
